@@ -1,24 +1,26 @@
 <?php
 
-include 'helpers.php';
+include('helpers.php');
 
 class Tests {
+
 	public static function testIntroduce($data) {
+		$helpers = new Helpers();
 		return Helpers::introduce($data[0]) === Helpers::$introText . $data[1];
 	}
 
 	static $testIntroduceData = [
-		[['Michelle'], 'Michelle.'],
+		[[['name'=>'Michelle']], 'Michelle.'],
 	];
 }
 
 class TestRunner {
-	private function pass($function) {
-		echo $function . ' passed √ :) \r\n';
+	private static function pass($function) {
+		echo 'test "' . $function . "\" passed √ :) \r\n";
 	}
 
-	private function fail($function) {
-		echo $function . ' Failed X :( \r\n';
+	private static function fail($function) {
+		echo $function . " Failed X :( \r\n";
 	}
 
 	// call the named function with the associated test data
@@ -30,9 +32,9 @@ class TestRunner {
 			$didPass = Tests::$testName($testCase);
 
 			if ($didPass) {
-				pass($testName);
+				self::pass($testName);
 			} else {
-				fail($testName);
+				self::fail($testName);
 			}
 		}
 	}

@@ -47,11 +47,9 @@ $exercises = [
 $participants = [
 	[
 		'name' => 'Camille',
-		'beginner' => false,
 	],
 	[
 		'name' => 'Michael',
-		'beginner' => false,
 	],
 	[
 		'name' => 'Tom',
@@ -59,15 +57,12 @@ $participants = [
 	],
 	[
 		'name' => 'Tim',
-		'beginner' => false,
 	],
 	[
 		'name' => 'Erik',
-		'beginner' => false,
 	],
 	[
 		'name' => 'Lars',
-		'beginner' => false,
 	],
 	[
 		'name' => 'Mathijs',
