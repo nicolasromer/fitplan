@@ -10,17 +10,58 @@ class Tests {
 	}
 
 	static $testIntroduceData = [
-		[[['name'=>'Michelle']], 'Michelle.'],
+
+		[
+			// input
+			[['name'=>'Michelle']],
+
+			// expected result
+			'Michelle.'
+		],
+
+		[
+			[[
+				'name'=>'Michelle',
+				'beginner' => true,
+			]],
+
+			'Michelle (beginner).'
+		],
+
+		[
+			[[
+				'name'=>'Michelle',
+			],[
+		    	'name' => 'Bobby',
+			]],
+
+			'Michelle, and Bobby.'
+		],
+
+		[
+			[[
+				'name'=>'Michelle',
+			],[
+		    	'name' => 'Bobby',
+		    	'beginner' => true
+			],[
+		    	'name' => 'Esther',
+			]],
+
+			'Michelle, Bobby (beginner) and Esther.'
+		],
 	];
 }
 
 class TestRunner {
-	private static function pass($function) {
-		echo 'test "' . $function . "\" passed √ :) \r\n";
+	private static function pass($function, $expected) {
+		echo 'PASSED test case for "' . $function . "\" with result: \r\n  "
+		. print_r($expected, true) . "\n\n";
 	}
 
-	private static function fail($function) {
-		echo $function . " Failed X :( \r\n";
+	private static function fail($function, $expected) {
+		echo 'FAILED test case for "'.$function."\" did not get expected result: \n  "
+		. print_r($expected, true) . "\n\n";
 	}
 
 	// call the named function with the associated test data
@@ -32,9 +73,9 @@ class TestRunner {
 			$didPass = Tests::$testName($testCase);
 
 			if ($didPass) {
-				self::pass($testName);
+				self::pass($testName, $testCase[1]);
 			} else {
-				self::fail($testName);
+				self::fail($testName, $testCase[1]);
 			}
 		}
 	}
