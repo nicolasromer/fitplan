@@ -88,7 +88,7 @@ class TestRunner {
 		. "\n";
 	}
 
-	private static function fail($function, $expected, $actual = '') {
+	private static function fail($function, $expected, $actual) {
 		echo "\nFAILED test case for \"".$function."\" did not get expected result: \n  "
 		. print_r($expected, true) . "\n"
 		. "Got this instead: \n"
@@ -108,7 +108,7 @@ class TestRunner {
 			if ($didPass) {
 				self::pass($testName, $testCase[1]);
 			} else {
-				self::fail($testName, $testCase[1]);
+				self::fail($testName, $testCase[1], $result);
 			}
 		}
 	}
