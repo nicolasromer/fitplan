@@ -1,12 +1,13 @@
 <?php
 
 include('helpers.php');
+include('planner.php');
 
 class Tests {
 
-	public static function testIntroduce($data) {
+	public static function testIntroduce($case) {
 		$helpers = new Helpers();
-		return Helpers::introduce($data[0]) === Helpers::$introText . $data[1];
+		return Helpers::introduce($case);
 	}
 
 	static $testIntroduceData = [
@@ -16,7 +17,7 @@ class Tests {
 			[['name'=>'Michelle']],
 
 			// expected result
-			'Michelle.'
+			'Today\'s participants are Michelle.'
 		],
 
 		[
@@ -25,7 +26,7 @@ class Tests {
 				'beginner' => true,
 			]],
 
-			'Michelle (beginner).'
+			'Today\'s participants are Michelle (beginner).'
 		],
 
 		[
@@ -35,33 +36,64 @@ class Tests {
 		    	'name' => 'Bobby',
 			]],
 
-			'Michelle, and Bobby.'
+			'Today\'s participants are Michelle, and Bobby.'
 		],
+	];
 
+	public static function testPlanWorkout($testCase) {
+		return Planner::planWorkout(
+			$testCase['participants'],
+			$testCase['exercises'],
+			$testCase['duration']
+		);
+	}
+
+	static $testPlanWorkoutData = [
 		[
-			[[
-				'name'=>'Michelle',
-			],[
-		    	'name' => 'Bobby',
-		    	'beginner' => true
-			],[
-		    	'name' => 'Esther',
-			]],
-
-			'Michelle, Bobby (beginner), and Esther.'
-		],
+			[
+				'participants' => [['name' => 'Jack']],
+				'exercises' => [[
+					'name' => 'deadlifts',
+				]],
+				'duration' => 5,
+			],
+			[
+				[
+					'person' => 'Jack',
+					'activity' => 'deadlifts',
+				],[
+					'person' => 'Jack',
+					'activity' => 'rest',
+				],[
+					'person' => 'Jack',
+					'activity' => 'deadlifts',
+				],[
+					'person' => 'Jack',
+					'activity' => 'rest',
+				],[
+					'person' => 'Jack',
+					'activity' => 'deadlifts',
+				]
+			]
+		]
 	];
 }
 
+
+
 class TestRunner {
 	private static function pass($function, $expected) {
-		echo 'PASSED test case for "' . $function . "\" with result: \r\n  "
-		. print_r($expected, true) . "\n\n";
+		echo "\nPASSED test case for \"" . $function . "\" with result: \r\n  "
+		. print_r($expected, true)
+		. "\n";
 	}
 
-	private static function fail($function, $expected) {
-		echo 'FAILED test case for "'.$function."\" did not get expected result: \n  "
-		. print_r($expected, true) . "\n\n";
+	private static function fail($function, $expected, $actual = '') {
+		echo "\nFAILED test case for \"".$function."\" did not get expected result: \n  "
+		. print_r($expected, true) . "\n"
+		. "Got this instead: \n"
+		. print_r($actual, true)
+		. "\n";
 	}
 
 	// call the named function with the associated test data
@@ -70,7 +102,8 @@ class TestRunner {
 		$testCases = Tests::${$testName.'Data'};
 		foreach ($testCases as $testCase) {
 
-			$didPass = Tests::$testName($testCase);
+			$result = Tests::$testName($testCase[0]);
+			$didPass = $result === $testCase[1];
 
 			if ($didPass) {
 				self::pass($testName, $testCase[1]);
@@ -89,7 +122,8 @@ class TestRunner {
 
 // Run the tests!
 TestRunner::run([
-	'testIntroduce',
+	//'testIntroduce',
+	'testPlanWorkout',
 ]);
 
 ?>
