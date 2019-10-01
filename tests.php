@@ -107,6 +107,9 @@ class Tests {
 				[
 					'name' => 'push ups',
 				],
+								[
+					'name' => 'back squats',
+				],
 				[
 					'name' => 'rings',
 					'limited_space' => true
@@ -124,8 +127,55 @@ class Tests {
 					'expert' => true,
 				],
 			],
-			['short sprints', 'push ups'],
+			['short sprints', 'push ups', 'jumping jacks', 'back squats'],
 		]
+	];
+
+	public static function testAssignExercisesToAll($case) {
+		return Planner::assignExercisesToAll($case['exercises'], $case['participants']);
+	}
+
+	static $testAssignExercisesToAllData = [
+		'creates a minute for each exercise for everyone' => [
+			[
+				'exercises' => ['foo', 'bar', 'grill'],
+				'participants' => [['name'=>'Joe'],['name'=>'Jill'],['name'=>'Jasper']]
+			],
+			[
+				[
+					'Joe' => 'foo',
+					'Jill' => 'foo',
+					'Jasper' => 'foo',
+				],[
+					'Joe' => 'bar',
+					'Jill' => 'bar',
+					'Jasper' => 'bar',
+				],[
+					'Joe' => 'grill',
+					'Jill' => 'grill',
+					'Jasper' => 'grill',
+				],
+			]
+		]
+	];
+
+	public static function testGetIntervalLength($case) {
+		return Planner::getIntervalLength($case[0], $case[1]);
+	}
+
+	static $testGetIntervalLengthData = [
+		'minimum workout' => [
+			[3, 1],
+			1
+		],
+		'short workout' => [
+			[5, 2],
+			1
+		],
+		'ok workout' => [
+			[10, 1],
+			5
+		],
 	];
 }
 

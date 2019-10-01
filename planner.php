@@ -10,11 +10,18 @@ class Planner {
 
 	public static function planWorkout(array $participants,array $exercises): array {
 	
+		$expertIntervals = self::getIntervalLength($duration, $breaks);
+		$beginnerIntervals = self::getIntervalLength($duration, $beginnerBreaks);
 
 		// I'm going to create an array for each minute
 		// so we can store all the data from the workout
 		// for analytics or other future reference.
 		$plannedMinutes = [];
+
+		// let's start everyone off with a basic shared workout
+		$bootcamp = self::createBootcamp($exercises);
+		$plannedMinutes = self::assignExercisesToAll($bootcamp, $participants);
+
 
 		for ($i=0; $i < $duration; $i++) { 
 		 	
@@ -31,31 +38,42 @@ class Planner {
 	}
 
 	/*
+	just get a minute for each exercise with all doing the same
+	*/
+	public static function assignExercisesToAll($exerciseNames, $participants) {
+		return array_map(function($exerciseName) use ($participants) {
+			$minute = [];
+
+			foreach ($participants as $person) {
+				$minute[$person['name']] = $exerciseName;
+			}
+
+			return $minute;
+		}, $exerciseNames);
+	}
+
+	/*
 	create a plan interspersing cardio with non-cardio exercises
 	without any limited or expert exercises
 	without repeating any exercises
 	so that everyone can participate
 	*/
 	public static function createBootcamp(array $exercises) {
-		$basicExercises = array_filter($exercises, function($exercise) {
-			if (
-				self::canAllParticipate($exercise)
-				&& empty($exercise['cardio'])
-				) {
-				return true;
-			}
-		});
+		$basicExercises = array_filter($exercises, [self::class, "isBasic"]);
+		$cardioExercises = array_filter($exercises, [self::class, "isCardio"]);
+		$bootcamp = self::array_zip($cardioExercises, $basicExercises);
 
-		$cardioExercises = array_filter($exercises, function($exercise) {
-			if (
-				self::canAllParticipate($exercise)
-				&& !empty($exercise['cardio'])
-				) {
-				return true;
-			}
-		});
+		return array_column($bootcamp, 'name');
+	}
 
-		return self::array_zip($cardioExercises, $basicExercises);
+	private static function isBasic($exercise) {
+		return 	self::canAllParticipate($exercise)
+				&& empty($exercise['cardio']);
+	}
+
+	private static function isCardio($exercise) {
+		return 	self::canAllParticipate($exercise)
+				&& !empty($exercise['cardio']);
 	}
 
 	// get exercises with no special criteria

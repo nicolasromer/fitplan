@@ -50,6 +50,8 @@ TestRunner::run([
 	'testPlanWorkout',
 	'testGetParticipantHistory',
 	'testCreateBootcamp',
+	'testAssignExercisesToAll',
+	'testGetIntervalLength',
 ]);
 
 ?>
