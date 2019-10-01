@@ -11,8 +11,7 @@ class Tests {
 	}
 
 	static $testIntroduceData = [
-
-		[
+		'one person' => [
 			// input
 			[['name'=>'Michelle']],
 
@@ -20,7 +19,7 @@ class Tests {
 			'Today\'s participants are Michelle.'
 		],
 
-		[
+		'beginner' => [
 			[[
 				'name'=>'Michelle',
 				'beginner' => true,
@@ -29,7 +28,7 @@ class Tests {
 			'Today\'s participants are Michelle (beginner).'
 		],
 
-		[
+		'multiple people' => [
 			[[
 				'name'=>'Michelle',
 			],[
@@ -49,7 +48,7 @@ class Tests {
 	}
 
 	static $testPlanWorkoutData = [
-		[
+		'creates basic plan' => [
 			[
 				'participants' => [['name' => 'Jack']],
 				'exercises' => [[
@@ -78,7 +77,7 @@ class Tests {
 	}
 
 	static $testGetParticipantHistoryData = [
-		[
+		'gets history' => [
 			[
 				'name' => 'Ryan',
 				'history' => [
@@ -97,54 +96,38 @@ class Tests {
 			['foo', 'bar', 'grill'],
 		],
 	];
+
+	public static function testCreateBootcamp($case) {
+		return Planner::createBootcamp($case);
+	}
+
+	static $testCreateBootcampData = [
+		'gets basic exercises interspersed with cardio' => [
+			[
+				[
+					'name' => 'push ups',
+				],
+				[
+					'name' => 'rings',
+					'limited_space' => true
+				],
+				[
+					'name' => 'short sprints',
+					'cardio' => true,
+				],
+								[
+					'name' => 'jumping jacks',
+					'cardio' => true,
+				],
+				[
+					'name' => 'handstand practice',
+					'expert' => true,
+				],
+			],
+			['short sprints', 'push ups'],
+		]
+	];
 }
 
-
-
-class TestRunner {
-	private static function pass($function, $expected) {
-		echo "\nPASSED test case for \"" . $function . "\" with result: \r\n  "
-		. print_r($expected, true)
-		. "\n";
-	}
-
-	private static function fail($function, $expected, $actual) {
-		echo "\nFAILED test case for \"".$function."\" did not get expected result: \n  "
-		. print_r($expected, true) . "\n"
-		. "Got this instead: \n"
-		. print_r($actual, true)
-		. "\n";
-	}
-
-	// call the named function with the associated test data
-	public static function runTest($testName) {
-		$dataGetter = $testName.'Data';
-		$testCases = Tests::${$testName.'Data'};
-		foreach ($testCases as $testCase) {
-
-			$result = Tests::$testName($testCase[0]);
-			$didPass = $result === $testCase[1];
-
-			if ($didPass) {
-				self::pass($testName, $testCase[1]);
-			} else {
-				self::fail($testName, $testCase[1], $result);
-			}
-		}
-	}
-
-    public static function run($tests) {
-    	foreach ($tests as $testName) {
-    		self::runTest($testName);
-    	}
-    }
-}
-
-// Run the tests!
-TestRunner::run([
-	'testIntroduce',
-	'testPlanWorkout',
-	'testGetParticipantHistory',
-]);
 
 ?>

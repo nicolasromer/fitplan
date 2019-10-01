@@ -4,18 +4,12 @@ include("data.php");
 
 class Planner {
 
-	public static function planWorkout(
-		array $participants,
-		array $exercises,
-		int $duration = 30,
-		int $breaks = 2,
-		int $beginnerBreaks = 4
-	): array {
-		
-		// todo: proper validation
-		if (!self::validateDurationAndBreaks($duration, $breaks, $beginnerBreaks)) {
-			throw new Error('You need enough time to allow the number of breaks you want.');
-		}
+	static $duration = 30;
+	static $breaks = 2;
+	static $beginnerBreaks = 4;
+
+	public static function planWorkout(array $participants,array $exercises): array {
+	
 
 		// I'm going to create an array for each minute
 		// so we can store all the data from the workout
@@ -37,12 +31,54 @@ class Planner {
 	}
 
 	/*
+	create a plan interspersing cardio with non-cardio exercises
+	without any limited or expert exercises
+	without repeating any exercises
+	so that everyone can participate
+	*/
+	public static function createBootcamp(array $exercises) {
+		$basicExercises = array_filter($exercises, function($exercise) {
+			if (
+				self::canAllParticipate($exercise)
+				&& empty($exercise['cardio'])
+				) {
+				return true;
+			}
+		});
+
+		$cardioExercises = array_filter($exercises, function($exercise) {
+			if (
+				self::canAllParticipate($exercise)
+				&& !empty($exercise['cardio'])
+				) {
+				return true;
+			}
+		});
+
+		return self::array_zip($cardioExercises, $basicExercises);
+	}
+
+	// get exercises with no special criteria
+	private static function canAllParticipate($exercise) {
+		return 	empty($exercise['limited_space'])
+				&& empty($exercise['expert']);
+	}
+
+	/*
+	Array zipper merge 
+	taken from https://stackoverflow.com/questions/43618598/php-array-merge-in-alternate-order-zip-order
+	*/
+	public static function array_zip(...$arrays) {
+	    return array_merge(...array_map(null, ...$arrays));
+	}
+
+	/*
 	Choose an exercise for this user based on previous minutes
 	*/
 	private static function assignActivity(array $participant, array $exercises, array $pastMinutes): string
 	{
 		// get list of exercises not covered yet
-		$history = self::getParticipantHistory($participant['name'], $pastMinutes, );
+		$history = self::getParticipantHistory($participant['name'], $pastMinutes);
 		$exerciseNames = array_column($exercises, 'name');
 		$exercisesNotCovered = array_diff($exerciseNames, $history, ['rest']);
 		$chosenExercise = empty($exercisesNotCovered)
@@ -63,13 +99,6 @@ class Planner {
 	{
 		return array_column($pastMinutes, $name);
 	}
-
-	private static function validateDurationAndBreaks(int $duration, int $breaks, int $beginnerBreaks): bool
-	{
-		// todo;
-		return true;
-	}
-
 }
 
 ?>

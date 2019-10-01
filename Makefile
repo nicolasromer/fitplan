@@ -1,3 +1,3 @@
 all:
 	echo 'running tests:'
-	php -f tests.php;
+	php -f test_runner.php;
