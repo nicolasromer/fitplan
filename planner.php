@@ -41,13 +41,21 @@ class Planner {
 	*/
 	private static function assignActivity(array $participant, array $exercises, array $pastMinutes): string
 	{
-		// look at past activity
-		$history = self::getParticipantHistory($participant['name'], $pastMinutes);
+		// get list of exercises not covered yet
+		$history = array_column($pastMinutes, $participant['name']);
+		$exerciseNames = array_column($exercises, 'name');
+		$exercisesNotCovered = array_diff($exerciseNames, $history, ['rest']);
+		$chosenExercise = empty($exercisesNotCovered)
+			? $exercises[0]['name']
+			: $exercisesNotCovered[0];
 
+			echo "istory: " . print_r($history, true) . "\n\n";
+			echo "xercises: " . print_r($exercises, true) . "\n\n";
+			echo "xerciseNames: " . print_r($exerciseNames) . "\n\n";
+			echo "xercisesNotCovered: " . print_r($exercisesNotCovered) . " \n\n\n ";
+			echo "hosenExercise: " . print_r($chosenExercise) . " \n\n\n ";
 
-
-		// everyone just rests for now.
-		return 'rest';
+		return $chosenExercise;
 	}
 
 	/*
@@ -55,11 +63,7 @@ class Planner {
 	*/
 	public static function getParticipantHistory(string $name, array $pastMinutes)
 	{
-		$userActivities = [];
-		foreach ($pastMinutes as $minute) {
-			$userActivities[] = $minute[$name];
-		}
-		return $userActivities;
+		return array_column($pastMinutes, $name);
 	}
 
 	private static function validateDurationAndBreaks(int $duration, int $breaks, int $beginnerBreaks): bool

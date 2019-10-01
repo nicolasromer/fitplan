@@ -59,20 +59,15 @@ class Tests {
 			],
 			[
 				[
-					'person' => 'Jack',
-					'activity' => 'deadlifts',
+					'Jack' =>'deadlifts',
 				],[
-					'person' => 'Jack',
-					'activity' => 'rest',
+					'Jack' =>'rest',
 				],[
-					'person' => 'Jack',
-					'activity' => 'deadlifts',
+					'Jack' =>'deadlifts',
 				],[
-					'person' => 'Jack',
-					'activity' => 'rest',
+					'Jack' =>'rest',
 				],[
-					'person' => 'Jack',
-					'activity' => 'deadlifts',
+					'Jack' =>'deadlifts',
 				]
 			]
 		]
@@ -95,6 +90,7 @@ class Tests {
 					],
 					'Minute 3' => [
 						'Ryan' => 'grill',
+						'Megan' => 'spam',
 					]
 				],
 			],
