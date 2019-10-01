@@ -1,12 +1,11 @@
 <?php
 
-include('helpers.php');
-include('planner.php');
+include_once('helpers.php');
+include_once('planner.php');
 
 class Tests {
 
 	public static function testIntroduce($case) {
-		$helpers = new Helpers();
 		return Helpers::introduce($case);
 	}
 
@@ -37,39 +36,6 @@ class Tests {
 
 			'Today\'s participants are Michelle, and Bobby.'
 		],
-	];
-
-	public static function testPlanWorkout($testCase) {
-		return Planner::planWorkout(
-			$testCase['participants'],
-			$testCase['exercises'],
-			$testCase['duration']
-		);
-	}
-
-	static $testPlanWorkoutData = [
-		'creates basic plan' => [
-			[
-				'participants' => [['name' => 'Jack']],
-				'exercises' => [[
-					'name' => 'deadlifts',
-				]],
-				'duration' => 5,
-			],
-			[
-				[
-					'Jack' =>'deadlifts',
-				],[
-					'Jack' =>'rest',
-				],[
-					'Jack' =>'deadlifts',
-				],[
-					'Jack' =>'rest',
-				],[
-					'Jack' =>'deadlifts',
-				]
-			]
-		]
 	];
 
 	public static function testGetParticipantHistory($case) {
@@ -166,6 +132,37 @@ class Tests {
 					]
 				]
 			]
+		],
+		'adds rests for each based on beginner status' => [
+			[
+				'exercises' => ['foo', 'bar', 'baz', 'boff', 'bin', 'six', 'seven', 'eight', 'nine', 'ten'],
+				'participants' => [
+					['name'=>'Joe'],
+					['name'=>'Jill', 'beginner' => true],
+				]
+			],
+			[
+				[['participant' => 'Joe', 'activity' => 'foo'],
+				['participant' => 'Jill', 'activity' => 'foo']],
+				[['participant' => 'Joe', 'activity' => 'bar'],
+				['participant' => 'Jill', 'activity' => 'bar']],
+				[['participant' => 'Joe', 'activity' => 'baz'],
+				['participant' => 'Jill', 'activity' => 'baz']],
+				[['participant' => 'Joe', 'activity' => 'boff'],
+				['participant' => 'Jill', 'activity' => 'boff']],
+				[['participant' => 'Joe', 'activity' => 'bin'],
+				['participant' => 'Jill', 'activity' => 'bin']], 
+				[['participant' => 'Joe', 'activity' => 'six'],
+				['participant' => 'Jill', 'activity' => 'rest']], // beginner rests @ six
+				[['participant' => 'Joe', 'activity' => 'seven'],
+				['participant' => 'Jill', 'activity' => 'seven']],
+				[['participant' => 'Joe', 'activity' => 'eight'],
+				['participant' => 'Jill', 'activity' => 'eight']],
+				[['participant' => 'Joe', 'activity' => 'nine'],
+				['participant' => 'Jill', 'activity' => 'nine']],
+				[['participant' => 'Joe', 'activity' => 'rest'], // expert rests at 10
+				['participant' => 'Jill', 'activity' => 'ten']],
+			]
 		]
 	];
 
@@ -189,6 +186,10 @@ class Tests {
 		'real workout' => [
 			[30, 2],
 			10
+		],
+		'real workout (beginner)' => [
+			[30, 4],
+			6
 		],
 	];
 }

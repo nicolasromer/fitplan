@@ -1,18 +1,12 @@
 <?php
 
-include("data.php");
-
 class Planner {
 
 	static $duration = 30;
 	static $breaks = 2;
 	static $beginnerBreaks = 4;
 
-	public static function planWorkout(array $participants,array $exercises): array {
-	
-		$expertIntervals = self::getIntervalLength($duration, $breaks);
-		$beginnerIntervals = self::getIntervalLength($duration, $beginnerBreaks);
-
+	public static function planWorkout(array $participantData,array $exercises): array {
 		// I'm going to create an array for each minute
 		// so we can store all the data from the workout
 		// for analytics or other future reference.
@@ -22,47 +16,33 @@ class Planner {
 		$bootcamp = self::createBootcamp($exercises);
 		$plannedMinutes = self::assignExercisesToAll($bootcamp, $participants);
 
+		// we can handle some exceptional exercises in another function
 
-		for ($i=0; $i < $duration; $i++) { 
-		 	
-			$minuteKey = 'Minute '. ($i+1);
-
-			foreach ($participants as $participant) {
-				
-				$activity = self::assignActivity($participant, $exercises, $plannedMinutes);
-				$plannedMinutes[$minuteKey][$participant['name']] = $activity;
-			};
-		 } 
-
-		 return $plannedMinutes;
+		return $plannedMinutes;
 	}
 
 
 	/*
-	how long should we workout before taking a break?
-	*/
-	public static function getIntervalLength($duration, $breakCount) {
-		$segments = $breakCount + 1;
-		return (int)floor($duration / $segments);
-	}
-
-
-	/*
-	just get a minute for each exercise with all doing the same
+	just get a minute for each exercise with all doing the same.
+	This is how we start all the workouts.
 	*/
 	public static function assignExercisesToAll($exerciseNames, $participants) {
-		return array_map(function($exerciseName) use ($participants) {
+		return array_map(function($index, $exerciseName) use ($participants) {
 			$minute = [];
 
 			foreach ($participants as $person) {
+				// todo: allow us to pass in current
+				$currentMinute = $index + 1;
+				$shouldRest = self::shouldRest($index + 1, $person);
+
 				$minute[] = [
 					'participant' => $person['name'],
-					'activity' => $exerciseName,
+					'activity' => $shouldRest ? 'rest' : $exerciseName,
 				];
 			}
 
 			return $minute;
-		}, $exerciseNames);
+		}, array_keys($exerciseNames), $exerciseNames);
 	}
 
 	/*
@@ -74,7 +54,7 @@ class Planner {
 	public static function createBootcamp(array $exercises) {
 		$basicExercises = array_filter($exercises, [self::class, "isBasic"]);
 		$cardioExercises = array_filter($exercises, [self::class, "isCardio"]);
-		$bootcamp = self::array_zip($cardioExercises, $basicExercises);
+		$bootcamp = Helpers::array_zip($cardioExercises, $basicExercises);
 
 		return array_column($bootcamp, 'name');
 	}
@@ -96,11 +76,20 @@ class Planner {
 	}
 
 	/*
-	Array zipper merge 
-	taken from https://stackoverflow.com/questions/43618598/php-array-merge-in-alternate-order-zip-order
+	how long should we workout before taking a break?
 	*/
-	public static function array_zip(...$arrays) {
-	    return array_merge(...array_map(null, ...$arrays));
+	public static function getIntervalLength($duration, $breakCount) {
+		$segments = $breakCount + 1;
+		return (int)floor($duration / $segments);
+	}
+
+	public static function shouldRest(int $minute, array $person): bool
+	{
+		$intervalLength = empty($person['beginner'])
+			? self::getIntervalLength(self::$duration, self::$breaks)
+			: self::getIntervalLength(self::$duration, self::$beginnerBreaks);
+	
+		return $minute > 0 && ($minute % $intervalLength === 0);
 	}
 
 	/*

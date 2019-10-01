@@ -1,13 +1,10 @@
 <?php
 
-include "tests.php";
+include_once('tests.php');
 
 class TestRunner {
 	private static function pass($function, $expected, $testName = '') {
-		echo "\n\033[32mPASSED\033[0m test case \"".$testName
-		."\" with result: \r\n  "
-		. print_r($expected, true)
-		. "\n";
+		echo "\n\033[32mPASSED\033[0m test case \"".$testName. "\n";
 	}
 
 	private static function fail($function, $expected, $actual, $testName = '') {
@@ -47,7 +44,6 @@ class TestRunner {
 // Run the tests!
 TestRunner::run([
 	'testIntroduce',
-	'testPlanWorkout',
 	'testGetParticipantHistory',
 	'testCreateBootcamp',
 	'testAssignExercisesToAll',

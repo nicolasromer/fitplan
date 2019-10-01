@@ -1,11 +1,6 @@
 <?php
 
 
-$duration = 30;
-
-$breaks = 2;
-
-$beginnerBreaks = 4;
 
 $exercises = [
 	[
