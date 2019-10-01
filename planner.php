@@ -37,6 +37,16 @@ class Planner {
 		 return $plannedMinutes;
 	}
 
+
+	/*
+	how long should we workout before taking a break?
+	*/
+	public static function getIntervalLength($duration, $breakCount) {
+		$segments = $breakCount + 1;
+		return (int)floor($duration / $segments);
+	}
+
+
 	/*
 	just get a minute for each exercise with all doing the same
 	*/
@@ -45,7 +55,10 @@ class Planner {
 			$minute = [];
 
 			foreach ($participants as $person) {
-				$minute[$person['name']] = $exerciseName;
+				$minute[] = [
+					'participant' => $person['name'],
+					'activity' => $exerciseName,
+				];
 			}
 
 			return $minute;

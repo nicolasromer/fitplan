@@ -138,23 +138,33 @@ class Tests {
 	static $testAssignExercisesToAllData = [
 		'creates a minute for each exercise for everyone' => [
 			[
-				'exercises' => ['foo', 'bar', 'grill'],
+				'exercises' => ['foo', 'bar'],
 				'participants' => [['name'=>'Joe'],['name'=>'Jill'],['name'=>'Jasper']]
 			],
 			[
 				[
-					'Joe' => 'foo',
-					'Jill' => 'foo',
-					'Jasper' => 'foo',
+					[
+						'participant' => 'Joe',
+						'activity' => 'foo',
+					],[
+						'participant' => 'Jill',
+						'activity' => 'foo',
+					],[
+						'participant' => 'Jasper',
+						'activity' => 'foo',
+					]
 				],[
-					'Joe' => 'bar',
-					'Jill' => 'bar',
-					'Jasper' => 'bar',
-				],[
-					'Joe' => 'grill',
-					'Jill' => 'grill',
-					'Jasper' => 'grill',
-				],
+					[
+						'participant' => 'Joe',
+						'activity' => 'bar',
+					],[
+						'participant' => 'Jill',
+						'activity' => 'bar',
+					],[
+						'participant' => 'Jasper',
+						'activity' => 'bar',
+					]
+				]
 			]
 		]
 	];
@@ -175,6 +185,10 @@ class Tests {
 		'ok workout' => [
 			[10, 1],
 			5
+		],
+		'real workout' => [
+			[30, 2],
+			10
 		],
 	];
 }
