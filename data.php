@@ -23,6 +23,7 @@ $exercises = [
 	],
 	[
 		'name' => 'pull ups',
+		// can only handle two users at a time
 		'limited_space' => true,
 	],
 	[

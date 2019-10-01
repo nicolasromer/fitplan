@@ -48,7 +48,7 @@ class Tests {
 		    	'name' => 'Esther',
 			]],
 
-			'Michelle, Bobby (beginner) and Esther.'
+			'Michelle, Bobby (beginner), and Esther.'
 		],
 	];
 }
