@@ -77,6 +77,31 @@ class Tests {
 			]
 		]
 	];
+
+	public static function testGetParticipantHistory($case) {
+		return Planner::getParticipantHistory($case['name'], $case['history']);
+	}
+
+	static $testGetParticipantHistoryData = [
+		[
+			[
+				'name' => 'Ryan',
+				'history' => [
+					'Minute 1' => [
+						'Ryan' => 'foo',
+					],
+					'Minute 2' => [
+						'Ryan' => 'bar',
+					],
+					'Minute 3' => [
+						'Ryan' => 'grill',
+					]
+				],
+			],
+			['foo', 'bar', 'grill'],
+		],
+
+	];
 }
 
 
@@ -124,6 +149,7 @@ class TestRunner {
 TestRunner::run([
 	//'testIntroduce',
 	'testPlanWorkout',
+	'testGetParticipantHistory',
 ]);
 
 ?>

@@ -12,7 +12,7 @@ class Planner {
 		int $beginnerBreaks = 4
 	): array {
 		
-		// todo: validate duration against number of breaks.
+		// todo: proper validation
 		if (!self::validateDurationAndBreaks($duration, $breaks, $beginnerBreaks)) {
 			throw new Error('You need enough time to allow the number of breaks you want.');
 		}
@@ -24,19 +24,13 @@ class Planner {
 
 		for ($i=0; $i < $duration; $i++) { 
 		 	
-		 	// map over the participants
-			$plan = array_map(function($participant) use ($plannedMinutes) {
+			$minuteKey = 'Minute '. ($i+1);
+
+			foreach ($participants as $participant) {
 				
-				$activity = self::assignActivity($participant, $plannedMinutes);
-
-				return [
-					'name' => $participant['name'],
-					'activity' => $activity
-				];
-
-			}, $participants);
-
-			$plannedMinutes[] = $plan;
+				$activity = self::assignActivity($participant, $exercises, $plannedMinutes);
+				$plannedMinutes[$minuteKey][$participant['name']] = $activity;
+			};
 		 } 
 
 		 return $plannedMinutes;
@@ -45,17 +39,27 @@ class Planner {
 	/*
 	Choose an exercise for this user based on previous minutes
 	*/
-	private static function assignActivity(array $participant, array $pastMinutes): string
+	private static function assignActivity(array $participant, array $exercises, array $pastMinutes): string
 	{
+		// look at past activity
+		$history = self::getParticipantHistory($participant['name'], $pastMinutes);
+
+
+
+		// everyone just rests for now.
 		return 'rest';
 	}
 
 	/*
 	Get this participant's exercises out of the overall plan
 	*/
-	private static function getParticipantHistory(array $participant, array $pastMinutes)
+	public static function getParticipantHistory(string $name, array $pastMinutes)
 	{
-
+		$userActivities = [];
+		foreach ($pastMinutes as $minute) {
+			$userActivities[] = $minute[$name];
+		}
+		return $userActivities;
 	}
 
 	private static function validateDurationAndBreaks(int $duration, int $breaks, int $beginnerBreaks): bool
