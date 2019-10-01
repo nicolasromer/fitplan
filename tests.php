@@ -96,7 +96,6 @@ class Tests {
 			],
 			['foo', 'bar', 'grill'],
 		],
-
 	];
 }
 
@@ -143,7 +142,7 @@ class TestRunner {
 
 // Run the tests!
 TestRunner::run([
-	//'testIntroduce',
+	'testIntroduce',
 	'testPlanWorkout',
 	'testGetParticipantHistory',
 ]);

@@ -42,18 +42,16 @@ class Planner {
 	private static function assignActivity(array $participant, array $exercises, array $pastMinutes): string
 	{
 		// get list of exercises not covered yet
-		$history = array_column($pastMinutes, $participant['name']);
+		$history = self::getParticipantHistory($participant['name'], $pastMinutes, );
 		$exerciseNames = array_column($exercises, 'name');
 		$exercisesNotCovered = array_diff($exerciseNames, $history, ['rest']);
 		$chosenExercise = empty($exercisesNotCovered)
 			? $exercises[0]['name']
 			: $exercisesNotCovered[0];
 
-			echo "istory: " . print_r($history, true) . "\n\n";
-			echo "xercises: " . print_r($exercises, true) . "\n\n";
-			echo "xerciseNames: " . print_r($exerciseNames) . "\n\n";
-			echo "xercisesNotCovered: " . print_r($exercisesNotCovered) . " \n\n\n ";
-			echo "hosenExercise: " . print_r($chosenExercise) . " \n\n\n ";
+		// todo: logic for rests
+		// todo: logic for high-demand equipment
+		// todo: logic for cardio sports	
 
 		return $chosenExercise;
 	}
