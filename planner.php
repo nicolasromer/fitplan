@@ -6,17 +6,23 @@ class Planner {
 	static $breaks = 2;
 	static $beginnerBreaks = 4;
 
-	public static function planWorkout(array $participantData,array $exercises): array {
+	public static function planWorkout(array $participants,array $exercises): array {
 		// I'm going to create an array for each minute
 		// so we can store all the data from the workout
 		// for analytics or other future reference.
 		$plannedMinutes = [];
 
 		// let's start everyone off with a basic shared workout
-		$bootcamp = self::createBootcamp($exercises);
-		$plannedMinutes = self::assignExercisesToAll($bootcamp, $participants);
+		$bootcampExercises = self::createBootcamp($exercises);
+		$plannedMinutes = self::assignExercisesToAll($bootcampExercises, $participants);
 
-		// we can handle some exceptional exercises in another function
+		// let's do the handstand round
+		$plannedMinutes[] = self::assignExercisesToAll(['handstand'], $participants)[0];
+
+		// the rest of the workout rotates people on and off the limited gear
+		$currentMinute = count($plannedMinutes);
+		
+		
 
 		return $plannedMinutes;
 	}
@@ -31,7 +37,7 @@ class Planner {
 			$minute = [];
 
 			foreach ($participants as $person) {
-				// todo: allow us to pass in current
+				// todo: allow us to pass in current index
 				$currentMinute = $index + 1;
 				$shouldRest = self::shouldRest($index + 1, $person);
 
@@ -90,34 +96,6 @@ class Planner {
 			: self::getIntervalLength(self::$duration, self::$beginnerBreaks);
 	
 		return $minute > 0 && ($minute % $intervalLength === 0);
-	}
-
-	/*
-	Choose an exercise for this user based on previous minutes
-	*/
-	private static function assignActivity(array $participant, array $exercises, array $pastMinutes): string
-	{
-		// get list of exercises not covered yet
-		$history = self::getParticipantHistory($participant['name'], $pastMinutes);
-		$exerciseNames = array_column($exercises, 'name');
-		$exercisesNotCovered = array_diff($exerciseNames, $history, ['rest']);
-		$chosenExercise = empty($exercisesNotCovered)
-			? $exercises[0]['name']
-			: $exercisesNotCovered[0];
-
-		// todo: logic for rests
-		// todo: logic for high-demand equipment
-		// todo: logic for cardio sports	
-
-		return $chosenExercise;
-	}
-
-	/*
-	Get this participant's exercises out of the overall plan
-	*/
-	public static function getParticipantHistory(string $name, array $pastMinutes)
-	{
-		return array_column($pastMinutes, $name);
 	}
 }
 

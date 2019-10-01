@@ -38,31 +38,6 @@ class Tests {
 		],
 	];
 
-	public static function testGetParticipantHistory($case) {
-		return Planner::getParticipantHistory($case['name'], $case['history']);
-	}
-
-	static $testGetParticipantHistoryData = [
-		'gets history' => [
-			[
-				'name' => 'Ryan',
-				'history' => [
-					'Minute 1' => [
-						'Ryan' => 'foo',
-					],
-					'Minute 2' => [
-						'Ryan' => 'bar',
-					],
-					'Minute 3' => [
-						'Ryan' => 'grill',
-						'Megan' => 'spam',
-					]
-				],
-			],
-			['foo', 'bar', 'grill'],
-		],
-	];
-
 	public static function testCreateBootcamp($case) {
 		return Planner::createBootcamp($case);
 	}

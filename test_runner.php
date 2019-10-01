@@ -44,7 +44,6 @@ class TestRunner {
 // Run the tests!
 TestRunner::run([
 	'testIntroduce',
-	'testGetParticipantHistory',
 	'testCreateBootcamp',
 	'testAssignExercisesToAll',
 	'testGetIntervalLength',
