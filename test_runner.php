@@ -4,6 +4,7 @@ include_once('tests.php');
 
 class TestRunner {
 	private static function pass($function, $expected, $testName = '') {
+		// todo: prepend the test function name. 
 		echo "\n\033[32mPASSED\033[0m test case \"".$testName. "\n";
 	}
 
@@ -16,7 +17,9 @@ class TestRunner {
 		. "\n";
 	}
 
-	// call the named function with the associated test data
+	/*
+	call the named function with the associated test data
+	*/
 	public static function runTest($testName) {
 		$dataGetter = $testName.'Data';
 		$testCases = Tests::${$testName.'Data'};

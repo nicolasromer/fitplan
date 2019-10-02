@@ -12,17 +12,22 @@ class Planner {
 		// for analytics or other future reference.
 		$plannedMinutes = [];
 
-		// let's start everyone off with a basic shared workout
+		/*
+		let's start out with a shared workout:
+		create a plan interspersing cardio with non-cardio exercises
+		without any limited or expert exercises
+		without repeating any exercises
+		so that everyone can participate
+		*/
 		$bootcampExercises = self::createBootcamp($exercises);
 		$plannedMinutes = self::assignExercisesToAll($bootcampExercises, $participants);
 
 		// let's do the handstand round
+		// todo: we need a way to know whether people have done a handstand yet
 		$plannedMinutes[] = self::assignExercisesToAll(['handstand'], $participants)[0];
 
-		// the rest of the workout rotates people on and off the limited gear
+		// todo: the rest of the workout rotates people on and off the limited gear
 		$currentMinute = count($plannedMinutes);
-		
-		
 
 		return $plannedMinutes;
 	}
@@ -52,10 +57,8 @@ class Planner {
 	}
 
 	/*
-	create a plan interspersing cardio with non-cardio exercises
-	without any limited or expert exercises
-	without repeating any exercises
-	so that everyone can participate
+	get all the basic and cardio exercises, intersperced so there's no cardio back to back
+	TODO: bug if we have more cardio than non-cardio exercises
 	*/
 	public static function createBootcamp(array $exercises) {
 		$basicExercises = array_filter($exercises, [self::class, "isBasic"]);
@@ -89,6 +92,9 @@ class Planner {
 		return (int)floor($duration / $segments);
 	}
 
+	/*
+	Shoud this person rest at this minute of the workout?
+	*/
 	public static function shouldRest(int $minute, array $person): bool
 	{
 		$intervalLength = empty($person['beginner'])
