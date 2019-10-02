@@ -18,19 +18,20 @@ TODOs:
 - The 'handstand' rule
 - The logger creating the output
 
-files:
-##test_runner.php
-this is where we have the loggers and test running function. Takes a function name and runs that function once for each entry in the {functionName}Data array, then compares the output to the expected data provided.
+files
+---
+test_runner.php:
+- this is where we have the loggers and test running function. Takes a function name and runs that function once for each entry in the {functionName}Data array, then compares the output to the expected data provided.
 
-##tests.php
-The tests functions and test data. here's where we write new tests.
+tests.php:
+- The tests functions and test data. here's where we write new tests.
 
 TODO:
-##Logger
-this is where the logging functions will go to transform the workout plan array to useful output.
+Logger (currently helpers.php):
+- this is where the logging functions will go to transform the workout plan array to useful output.
 
-##Planner
-Where the core logic resides for planning the workout.
+Planner:
+- Where the core logic resides for planning the workout.
 
 
 
