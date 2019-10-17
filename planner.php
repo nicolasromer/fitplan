@@ -1,5 +1,7 @@
 <?php
 
+require 'vendor/autoload.php';
+
 class Planner {
 
 	static $duration = 30;
@@ -38,22 +40,24 @@ class Planner {
 	This is how we start all the workouts.
 	*/
 	public static function assignExercisesToAll($exerciseNames, $participants) {
-		return array_map(function($index, $exerciseName) use ($participants) {
-			$minute = [];
+		return collect($exerciseNames)
+			->map(function($exerciseName, $index) use ($participants) {
+				return self::planMinute($exerciseName, $index + 1, $participants);
+			})->toArray();
+	}
 
-			foreach ($participants as $person) {
-				// todo: allow us to pass in current index
-				$currentMinute = $index + 1;
-				$shouldRest = self::shouldRest($index + 1, $person);
+	public static function planMinute($exercise, $currentMinute, $participants) {
+		return collect($participants)
+				->reduce(function($plan, $person) use ($currentMinute, $exercise) {
+					$shouldRest = self::shouldRest($currentMinute, $person);
 
-				$minute[] = [
-					'participant' => $person['name'],
-					'activity' => $shouldRest ? 'rest' : $exerciseName,
-				];
-			}
+					$plan[] = [
+						'participant' => $person['name'],
+						'activity' => $shouldRest ? 'rest' : $exercise,
+					];
 
-			return $minute;
-		}, array_keys($exerciseNames), $exerciseNames);
+					return $plan;
+				}, []);
 	}
 
 	/*
@@ -88,6 +92,7 @@ class Planner {
 	how long should we workout before taking a break?
 	*/
 	public static function getIntervalLength($duration, $breakCount) {
+		collect([1,2]);
 		$segments = $breakCount + 1;
 		return (int)floor($duration / $segments);
 	}
